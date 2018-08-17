@@ -30,6 +30,7 @@ public class FileCollector {
 		fileChooser.setDialogTitle("Откуда брать файлы?");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setMultiSelectionEnabled(true);
+		fileChooser.setCurrentDirectory(new File(new File(".").getAbsolutePath()));
 
 		final List<File> inputDirectories = new ArrayList<>();
 
@@ -173,9 +174,6 @@ public class FileCollector {
 		}
 		for (File f : list) {
 			String name = f.getName();
-			// if (name.endsWith(".java") || name.endsWith(".xml") || name.endsWith(".c") ||
-			// name.endsWith(".cpp")
-			// || name.endsWith(".cs") || name.endsWith(".h") || name.endsWith(".hpp")) {
 			if (endsWithAny(name, postfixes)) {
 				try {
 					appendFile(bWr, f);
@@ -202,7 +200,13 @@ public class FileCollector {
 		try (BufferedReader br = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
 			String ss;
 			while ((ss = br.readLine()) != null) {
-				bWr.write(ss.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
+				bWr
+						.write(ss
+								.replaceAll("&", "&amp;")
+								.replaceAll("<", "&lt;")
+								.replaceAll(">", "&gt;")
+								.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;")
+								.replaceAll("    ", "&nbsp;&nbsp;&nbsp;&nbsp;"));
 				bWr.write("<br>");
 				bWr.newLine();
 			}
